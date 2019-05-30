@@ -17,3 +17,26 @@
 ## ('9', ['A', 'B', 'C', 'E'])
 ##
 ##
+import re
+ListaDeArchivos = []
+Archivo = open('data.csv', 'r')
+PatronDeRemplazoValoresConComa = re.compile(r'(\d),')
+ArchivoEnMemoria = (Archivo.readlines())
+Archivo.close()
+ArchivoEnMemoria = [linea.replace("\t", " ") for linea in ArchivoEnMemoria]
+ArchivoEnMemoria = [linea.replace(":", " ") for linea in ArchivoEnMemoria]
+ArchivoEnMemoria = [linea[:-1] for linea in ArchivoEnMemoria]
+ArchivoEnMemoria = [PatronDeRemplazoValoresConComa.sub(r"\1 ", linea) for linea in ArchivoEnMemoria]
+ArchivoEnMemoria = [linea.split(' ') for linea  in ArchivoEnMemoria]
+ValorSegundaColumna = [Registro[1] for Registro in ArchivoEnMemoria]
+ValoresUnicos = set([Registro for Registro in ValorSegundaColumna]) 
+ListaDeValoresPorRegistro = {Valor:[] for Valor in ValoresUnicos}
+for Fila in ArchivoEnMemoria:
+    ListaDeValoresPorRegistro.get(Fila[1], "").append(Fila[0])
+for Lista in ListaDeValoresPorRegistro.keys():
+     ListaDeValoresPorRegistro[Lista] = [k for k in  set(ListaDeValoresPorRegistro[Lista]) ]
+     ListaDeValoresPorRegistro.get(Lista).sort()
+Resultado = [(key,ListaDeValoresPorRegistro[key])for key  in ListaDeValoresPorRegistro]
+Resultado =  sorted(Resultado)
+for item in Resultado:
+    print("("+"'"+item[0]+"'"+", "+str(item[1])+")")

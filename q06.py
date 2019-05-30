@@ -13,3 +13,26 @@
 ## iii,2,7
 ## jjj,2,5
 ##
+
+import re
+ListaDeArchivos = []
+Archivo = open('data.csv', 'r')
+PatronDeRemplazoValoresConComa = re.compile(r'(\d),')
+ArchivoEnMemoria = (Archivo.readlines())
+Archivo.close()
+ArchivoEnMemoria = [linea.replace("\t", " ") for linea in ArchivoEnMemoria]
+ArchivoEnMemoria = [linea.replace(":", " ") for linea in ArchivoEnMemoria]
+ArchivoEnMemoria = [linea[:-1] for linea in ArchivoEnMemoria]
+ArchivoEnMemoria = [PatronDeRemplazoValoresConComa.sub(r"\1 ", linea) for linea in ArchivoEnMemoria]
+ArchivoEnMemoria = [linea.split(' ') for linea  in ArchivoEnMemoria]
+CadenasTresLetras = [ (Registro[4]) for Registro in ArchivoEnMemoria]
+LetrasUnicas = set(Registro for Registro in CadenasTresLetras) 
+LetrasUnicas = sorted(LetrasUnicas)
+ListaDeValoresPorLetra = {Letra:[] for Letra in LetrasUnicas}
+for Fila in ArchivoEnMemoria:
+    for ElmentoDeFila in Fila:
+        if  ElmentoDeFila.isdigit():
+            ListaDeValoresPorLetra.get(Fila[4], "").append(ElmentoDeFila)
+Resultado = [(key,min(ListaDeValoresPorLetra[key]),max(ListaDeValoresPorLetra[key]))for key  in ListaDeValoresPorLetra]
+for item in Resultado:
+    print(item[0]+","+str(item[1])+","+str(item[2]))
